@@ -18,41 +18,41 @@ SerialLogHandler logHandler(LOG_LEVEL_ALL);
 //*************************
 void start_sonic_sample(void) 
 {
-  Wire.beginTransmission(RCWL1601_I2C_ADDR);
-  Wire.write(1);
-  Wire.endTransmission();
+	Wire.beginTransmission(RCWL1601_I2C_ADDR);
+	Wire.write(1);
+	Wire.endTransmission();
 }
 //**********
 //Initialize
 //**********
 void setup() 
 {
-  //***********************
-  //Slow down bus if needed
-  //***********************
-  //Wire.setSpeed(20000);
-  //*****************************
-  //Initialize I2C pins (SDA/SCL)
-  //*****************************
-  Wire.begin();
-  //******************
-  //Start first sample
-  //******************
-  start_sonic_sample();
+	//***********************
+	//Slow down bus if needed
+	//***********************
+	//Wire.setSpeed(20000);
+	//*****************************
+	//Initialize I2C pins (SDA/SCL)
+	//*****************************
+	Wire.begin();
+	//******************
+	//Start first sample
+	//******************
+	start_sonic_sample();
 }
 //***************
 //Background loop
 //***************
 void loop() 
 {
-  unsigned long int micrometers;
-  double mm, inches;
-
-  //*******************************************
-  //Delay a little before processing new sample
-  //*******************************************
+	unsigned long int micrometers;
+	double mm, inches;
+	
+	//*******************************************
+	//Delay a little before processing new sample
+	//*******************************************
 	delay(50);
-
+	
 	//******************************
 	//Ask for the 3-byte measurement
 	//******************************
@@ -62,34 +62,34 @@ void loop()
 	//******************************************
 	if (Wire.available() == 3)
 	{
-	    //*****************
-	    //Read 3-byte value
-	    //*****************
-	    micrometers  = (unsigned long int)Wire.read() << 16;
-	    micrometers += (unsigned long int)Wire.read() << 8;
-	    micrometers += (unsigned long int)Wire.read();
-	    //******************************
-	    //Compute millimeters and inches
-	    //******************************
-	    mm = (double)micrometers / 1000.0;
-	    inches = mm * 0.0393701;
-	    //*******************
-	    //Send to serial port
-	    //*******************
-        Log.info("Distance mm=%.1f, inches=%.2f",mm,inches);
+		//*****************
+		//Read 3-byte value
+		//*****************
+		micrometers  = (unsigned long int)Wire.read() << 16;
+		micrometers += (unsigned long int)Wire.read() << 8;
+		micrometers += (unsigned long int)Wire.read();
+		//******************************
+		//Compute millimeters and inches
+		//******************************
+		mm = (double)micrometers / 1000.0;
+		inches = mm * 0.0393701;
+		//*******************
+		//Send to serial port
+		//*******************
+		Log.info("Distance mm=%.1f, inches=%.2f",mm,inches);
 	}
 	else
 	{
-        Log.info("****** MEASUREMENT NOT TRANSFERRED ******");
+		Log.info("****** MEASUREMENT NOT TRANSFERRED ******");
 	}
-
-  //************************
-  //Pace the sensor readings
-  //************************
-  delay(500);
-
-  //***********************************
-  //Start a new measurement before exit
-  //***********************************
-  start_sonic_sample();
+	
+	//************************
+	//Pace the sensor readings
+	//************************
+	delay(500);
+	
+	//***********************************
+	//Start a new measurement before exit
+	//***********************************
+	start_sonic_sample();
 }
